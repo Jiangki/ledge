@@ -8,18 +8,19 @@ repository boundary and public-release procedure live in
 Milestones are roughly 6–10 weeks each. **Do not enter the next milestone
 until the previous exit criteria pass.** Dates are guidance, not promises.
 
-A short summary also appears in the root [README](../README.md#roadmap).
+A short summary also appears in the root
+[README](../README.md#project-status-and-roadmap).
 
 ---
 
 ## Milestone overview
 
-| Milestone | Version target | Theme |
+| Milestone | Delivery | Theme |
 |---|---|---|
 | **M0** | 0.1.x | Make “it runs” into “others can start without traps” |
 | **M1** | 0.2.0 | Trust — scaling, PyPI, first honest comparison |
-| **M2** | 0.3.0 | Usability — L1, certificates, polishing, rolling cache |
-| **M3** | 0.4.x | Vertical productization — batch & workflows |
+| **M2** | Shipped early in 0.2.0 | Usability — L1, certificates, polishing, rolling cache |
+| **M3** | Shipped early in 0.2.0 | Vertical productization — batch & workflows |
 | **M4** | 0.5 → 1.0 | API freeze, compatibility policy, ecosystem evidence |
 
 ---
@@ -69,7 +70,7 @@ honest comparison.
 
 ---
 
-## M2 — 0.3.0 “Usable”
+## M2 — “Usable” (shipped early in 0.2.0)
 
 **Goal:** cover real rebalancing needs so factor-model users can move repeated
 portfolio QPs out of general modeling boilerplate when this niche fits.
@@ -98,7 +99,7 @@ portfolio QPs out of general modeling boilerplate when this niche fits.
 
 ---
 
-## M3 — 0.4.x “Vertical productization”
+## M3 — “Vertical productization” (shipped early in 0.2.0)
 
 **Goal:** grow from “solver” into a documented rebalancing engine while
 keeping the repository boundary mechanically checkable.

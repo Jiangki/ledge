@@ -3,7 +3,7 @@
 A mapping from the cvxpy patterns used in factor-model portfolio
 rebalancing to the Ledge Python API. Every code pair in this guide is
 executed and cross-checked against cvxpy + Clarabel by
-[`python/tests/test_migration_guide.py`](../python/tests/test_migration_guide.py),
+[`python/tests/test_migration_guide.py`](https://github.com/Jiangki/ledge/blob/main/python/tests/test_migration_guide.py),
 so the mappings stay correct as APIs evolve.
 
 Ledge is **not** a cvxpy replacement. cvxpy is a modeling language over many
@@ -24,7 +24,7 @@ Migrate a workload when all of the following hold:
   `k <= 100` factors, `m <= 200` explicit linear constraint rows.
 - The workload is repeated: rolling backtests and daily rebalances are where
   warm starts and factorization reuse pay (see the measured numbers in
-  [`examples/README.md`](examples/README.md)).
+  [`docs/examples/README.md`](https://github.com/Jiangki/ledge/blob/main/docs/examples/README.md)).
 
 Stay in cvxpy when you need anything outside that set, for example:
 
@@ -234,7 +234,8 @@ date can be skipped without restarting the backtest.
 Measured effect on the repository's momentum-backtest example (300 assets,
 12 factors, 24 dates): warm dates take 37 versus 79 iterations and 0.91 ms
 versus 1.71 ms against per-date cold solves, with 24 factorizations
-replaced by 2 ([`examples/README.md`](examples/README.md)).
+replaced by 2
+([`docs/examples/README.md`](https://github.com/Jiangki/ledge/blob/main/docs/examples/README.md)).
 
 ## 7. Statuses, failures, and duals
 
@@ -269,8 +270,9 @@ Differences worth knowing:
 
 Do not trust either solver's reported objective when switching: evaluate
 one NumPy objective of your own on both weight vectors, exactly like
-[`python/tests/test_reference.py`](../python/tests/test_reference.py) and
-[`python/tests/test_migration_guide.py`](../python/tests/test_migration_guide.py)
+[`python/tests/test_reference.py`](https://github.com/Jiangki/ledge/blob/main/python/tests/test_reference.py)
+and
+[`python/tests/test_migration_guide.py`](https://github.com/Jiangki/ledge/blob/main/python/tests/test_migration_guide.py)
 do:
 
 ```python

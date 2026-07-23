@@ -19,7 +19,7 @@ Optional cargo features on `ledge` / `ledge-core`:
 
 ## Python
 
-Install the `0.2.0` registry artifact after it is published:
+Install the published `0.2.0` release:
 
 ```bash
 python -m pip install ledge-portfolio==0.2.0

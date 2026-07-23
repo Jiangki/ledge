@@ -35,7 +35,7 @@ The canonical engineering documents live in the repository and stay there
 M0 (foundations), M1 engineering (scaling, over-relaxation, comparisons),
 M2 (L1, certificates, polishing, workspace, sequences, tracking), and the
 M3 engineering items (templates, batch, serialization, this docs site) are
-complete. Remaining roadmap items are adoption- and decision-driven:
-public release gate, PyPI wheels, external real workloads, and the 1.0
-compatibility review. Sparse `F` support is deliberately deferred until a
-real workload needs it.
+complete; the public `0.2.0` crates, Python wheels, and documentation site
+are live. Remaining roadmap items are adoption- and decision-driven:
+external real workloads and the 1.0 compatibility review. Sparse `F`
+support is deliberately deferred until a real workload needs it.

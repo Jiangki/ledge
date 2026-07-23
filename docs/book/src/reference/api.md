@@ -1,8 +1,11 @@
 # API surface
 
-Until crates.io / PyPI releases exist, API reference is generated locally.
-
 ## Rust
+
+Published API documentation:
+[`ledge`](https://docs.rs/ledge-portfolio) and
+[`ledge-core`](https://docs.rs/ledge-core).
+To generate the Rust documentation locally:
 
 ```bash
 cargo doc -p ledge-portfolio --no-deps --open
@@ -41,4 +44,8 @@ help(ledge.solve_batch)
 | `ledge.solve_batch(problems, steps, ...)` | parallel multi-account batch |
 | `ledge.solve_mean_variance_factor(...)` | one-shot function form |
 | `PortfolioProblem.to_json()` / `from_json()`, `SolveResult.to_json()` | reproduction dumps |
-| `SolveResult` | weights, duals, residuals, diagnostics, certificate |
+| `SolveResult` | weights, status, objective, audited residuals, diagnostics, certificate; `to_json()` includes the full dual blocks |
+
+Python does not currently expose solution dual multipliers as direct
+`SolveResult` attributes. Use `to_json()` when a bug report or audit needs
+the complete serialized solver result.

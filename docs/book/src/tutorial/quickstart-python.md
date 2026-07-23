@@ -66,11 +66,12 @@ factorization and chains full primal/dual warm starts automatically.
 ## Reading the result
 
 `SolveResult` carries `status`, `weights`, `objective`, `iterations`,
-`solve_time`, independently evaluated `primal_residual` / `dual_residual`,
-`polished`, duals, and — for infeasible problems — an auditable
-`certificate`. Failures raise by default; pass `raise_on_failure=False` to
-inspect the result instead. `convergence_hints` explains unconverged solves
-in portfolio vocabulary.
+`solve_time_seconds`, independently evaluated `primal_residual` /
+`dual_residual`, `polished`, and — for infeasible problems — an auditable
+`certificate`. The lossless `to_json()` output also contains every dual
+multiplier block. Failures raise by default; pass `raise_on_failure=False`
+to inspect the result instead. `convergence_hints` explains unconverged
+solves in portfolio vocabulary.
 
 One-shot function form: `ledge.solve_mean_variance_factor(...)` takes the
 same keyword arguments and returns the same `SolveResult`.
