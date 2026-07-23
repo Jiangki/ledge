@@ -24,17 +24,19 @@ jobs:
     name: Strict release preflight
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Check version and open-core gate
         shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
         run: |
           version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | sed -n '1p')"
-          test "${{ inputs.tag }}" = "v${version}" || {
-            echo "::error::input tag ${{ inputs.tag }} does not match Cargo version v${version}"
+          test "$RELEASE_TAG" = "v${version}" || {
+            echo "::error::input tag $RELEASE_TAG does not match Cargo version v${version}"
             exit 1
           }
-          test "$GITHUB_REF" = "refs/tags/${{ inputs.tag }}" || {
-            echo "::error::select tag ${{ inputs.tag }} as the workflow ref (got $GITHUB_REF)"
+          test "$GITHUB_REF" = "refs/tags/$RELEASE_TAG" || {
+            echo "::error::select tag $RELEASE_TAG as the workflow ref (got $GITHUB_REF)"
             exit 1
           }
           test "$(sed -n 's/^version = "\(.*\)"/\1/p' python/pyproject.toml | sed -n '1p')" = "$version"
@@ -65,20 +67,20 @@ jobs:
             manylinux: "off"
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           # pyo3 abi3-py39: one wheel supports CPython 3.9 and newer.
           python-version: "3.9"
       - name: Build wheel
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           working-directory: python
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux }}
           args: --release --locked --out dist
       - name: Upload wheel
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: python-wheel-${{ matrix.platform }}
           path: python/dist/*.whl
@@ -89,9 +91,9 @@ jobs:
     needs: preflight
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Build sdist
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           working-directory: python
           command: sdist
@@ -99,7 +101,7 @@ jobs:
           # workspace Cargo.lock is included and wheel builds are locked.
           args: --out dist
       - name: Upload sdist
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: python-sdist
           path: python/dist/*.tar.gz
@@ -117,10 +119,10 @@ jobs:
       id-token: write
     steps:
       - name: Download distributions
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: python-*
           path: dist
           merge-multiple: true
       - name: Publish with PyPI Trusted Publishing
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247 # release/v1

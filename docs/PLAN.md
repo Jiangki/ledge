@@ -82,8 +82,8 @@ daily, weekly, or monthly portfolio rebalances.
 | Trust | `n=2000, k=50` and the declared smoke matrix solve under defaults; comparison protocol and raw data published | Done |
 | Rebalancing | Exact L1 turnover, certificates, polishing, tracking error, and measured rolling warm-start effect | Done |
 | Workflows | Constraint templates, serialization, and 1 model × 500 accounts × 250 dates batch evidence | Done |
-| Distribution | Public OSS license, publishable crates, PyPI wheels, public docs | Pending maintainer action |
-| Stability | 1.0 API review, semver/MSRV/deprecation policy | Pending |
+| Distribution | Public OSS license, crates.io packages, PyPI wheels, public docs | Done — `0.2.0` published |
+| Stability | 1.0 compatibility, semver/MSRV, and deprecation review | Pending |
 
 The current measured evidence is indexed in
 [`docs/book/src/reference/benchmarks.md`](book/src/reference/benchmarks.md).
@@ -164,9 +164,9 @@ the primary comparative story; cold-start results must still be shown.
 
 ## 7. Release policy
 
-- Before public distribution, complete every step in
+- Every release follows the controls in
   [`OPEN_CORE.md` §5](OPEN_CORE.md#5-public-release-runbook-roadmap-16-gate)
-  and make `./scripts/check_open_core.sh --release` pass.
+  and must make `./scripts/check_open_core.sh --release` pass.
 - Each release follows: changelog → tests → package checks → tag → crates.io
   (`ledge-core`, then `ledge-portfolio`) → PyPI wheels → GitHub Release
   linking the evidence used for claims.
@@ -179,11 +179,9 @@ the primary comparative story; cold-start results must still be shown.
 
 ## 8. Current priorities
 
-1. Export the verified gate tree as the selected clean-root public repository.
-2. Configure PyPI Trusted Publishing and publish the tagged release wheels.
-3. Collect redacted real workloads for the regression set.
-4. Evaluate sparse factor storage only if those workloads demonstrate need.
-5. Review the API, MSRV, and deprecation policy before 1.0.
+1. Collect redacted real workloads for the regression set.
+2. Evaluate sparse factor storage only if those workloads demonstrate need.
+3. Review the API, MSRV, semver, and deprecation policy before 1.0.
 
 ---
 
