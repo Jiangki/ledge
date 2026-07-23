@@ -4,10 +4,29 @@ All notable changes to Ledge are documented here. The project follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and intends to use
 [Semantic Versioning](https://semver.org/) once the public API stabilizes.
 
-Tagged GitHub releases will be created when publishing artifacts; until then,
-version links below point at the repository history.
+Version links below point to the corresponding GitHub tags or comparisons.
 
 ## [Unreleased]
+
+### Fixed
+
+- Replaced unsupported operator-name math macros with GitHub/KaTeX-compatible
+  roman notation across the README and mathematical documentation.
+- Updated package, documentation-site, and roadmap copy to reflect the
+  published `0.2.0` artifacts.
+
+### Security
+
+- Pinned third-party GitHub Actions to immutable commits, restricted default
+  workflow permissions to read-only, verified the downloaded mdBook archive,
+  and moved workflow-dispatch input handling out of interpolated shell source.
+- Added Dependabot coverage for Cargo, Python, and GitHub Actions plus a
+  repository security-audit report.
+
+### Documentation
+
+- Reworked the README quick start, navigation, feature overview, documentation
+  map, Rust example, platform guidance, and current roadmap.
 
 ## [0.2.0] - 2026-07-22
 
@@ -335,10 +354,6 @@ version links below point at the repository history.
   `max(primal_tolerance, dual_tolerance)`.
 - Convergence hints for badly scaled data now point at the
   `scaling_iterations` setting instead of announcing planned equilibration.
-- Made the GitHub repository private and switched from Apache-2.0 to a
-  proprietary license (`LicenseRef-Proprietary`). Crates are marked
-  `publish = false`.
-
 ### Documentation
 
 - Recorded the measured vector-ρ re-evaluation in `docs/DECISIONS.md`
@@ -346,8 +361,7 @@ version links below point at the repository history.
   matrix, so vector ρ stays deferred with an explicit reopening condition;
   roadmap 1.5 is closed for M2.
 - Added `docs/PLAN.md` — vertical product plan (niche, expectations, stack,
-  open-core vs paid boundary, commercialization gates). Notes current
-  proprietary status and the M1 public-release gate.
+  open-core boundary, and technical acceptance gates).
 - Rewrote `docs/ROADMAP.md` as executable milestones M0–M4 with exit criteria
   and technical notes (scaling, certificates, L1 prox, workspace).
 - Added `docs/DECISIONS.md` ADR log for plan adoption.
@@ -360,7 +374,6 @@ version links below point at the repository history.
 - Removed pre-publish checklist docs; kept product roadmap and algorithm notes.
 - Clarified scope and non-goals without historical repository-name framing.
 - Added `SECURITY.md`, `docs/SMOKE_TIMINGS.md`, README diagrams, and CI.
-- Renamed GitHub repository from `mip-solver-lab` to `ledge`; updated URLs.
 
 ## [0.1.0] - 2026-07-14
 

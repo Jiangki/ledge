@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Historical roadmap wording is not an API credential"
+regexTarget = "match"
+paths = ['''docs/PLAN\.md''']
+regexes = ['''API review, semver/MSRV/deprecation policy''']
