@@ -11,7 +11,7 @@ independent `check_kkt` on the original data. Nothing here is extrapolated.*
 A factor risk model writes the asset covariance as
 
 \[
-\Sigma = F \Omega F^\mathsf{T} + \operatorname{diag}(d),
+\Sigma = F \Omega F^\mathsf{T} + \mathrm{diag}(d),
 \qquad F \in \mathbb{R}^{n \times k},\; k \ll n .
 \]
 
@@ -39,14 +39,14 @@ dense \(n \times n\) algebra.
 **Lifted (the sophisticated manual fix).** Add \(k\) auxiliary variables
 \(y = \Omega^{1/2} F^\mathsf{T} w\) and \(k\) equality rows; the objective
 becomes sparse-diagonal
-(\(\tfrac{1}{2} w^\mathsf{T}\!\operatorname{diag}(d)\,w +
+(\(\tfrac{1}{2} w^\mathsf{T}\!\mathrm{diag}(d)\,w +
 \tfrac{1}{2}\lVert y\rVert^2\)). A general sparse solver handles this well
 — it is the strongest external baseline and every published Ledge
 comparison includes it.
 
 **Native factor form (Ledge).** Take \(F, \Omega, d\) directly. The ADMM
 x-update solves a system of the form
-\(\bigl(\operatorname{diag}(\tilde d) + G G^\mathsf{T}\bigr) x = r\) with
+\(\bigl(\mathrm{diag}(\tilde d) + G G^\mathsf{T}\bigr) x = r\) with
 \(G \in \mathbb{R}^{n \times r}\), and Sherman–Morrison–Woodbury reduces it
 to an \(r \times r\) Gram factorization with
 

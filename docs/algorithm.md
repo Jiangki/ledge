@@ -14,7 +14,7 @@ The solver accepts
 +\sum_i c_i\,|x_i-a_i|,\\
 \text{s.t.}\quad
 &A_e x=b_e,\quad A_i x\le b_i,\quad \ell\le x\le u,\\
-&Q=F\Omega F^\mathsf{T}+\operatorname{diag}(d),
+&Q=F\Omega F^\mathsf{T}+\mathrm{diag}(d),
 \end{aligned}
 \]
 
@@ -97,7 +97,7 @@ the weighted L1 distance to the anchor — elementwise soft-thresholding:
 \[
 (z_t^{k+1})_i=a_i+S_{c_i/\rho}\!\left((\hat z_t^{k+1}+y_t^k/\rho)_i-a_i\right),
 \qquad
-S_\kappa(v)=\operatorname{sign}(v)\max(|v|-\kappa,0),
+S_\kappa(v)=\mathrm{sign}(v)\max(|v|-\kappa,0),
 \]
 
 with the same over-relaxed blend and dual update as the other blocks. The
@@ -131,7 +131,7 @@ rebuilding it.
 
 With default settings (`scaling_iterations = 10`; `0` disables), the solver
 iterates on an equilibrated copy of the data. Each Ruiz pass computes a
-variable scaling \(E=\operatorname{diag}(e)\), row scalings \(D_e, D_i\) for
+variable scaling \(E=\mathrm{diag}(e)\), row scalings \(D_e, D_i\) for
 the two constraint blocks, and a cost scalar \(c\), accumulated over passes:
 
 \[
@@ -163,7 +163,7 @@ and returned iterates are always evaluated on the original data. A reported
 Let
 
 \[
-B=\operatorname{diag}(d)+(\sigma+\rho)I,\qquad
+B=\mathrm{diag}(d)+(\sigma+\rho)I,\qquad
 U=[G,\sqrt{\rho}A^\mathsf{T}].
 \]
 
@@ -218,7 +218,7 @@ usual multiplicative ladder), so lookups are bit-exact, the iterate path is
 identical to a fresh `Solver::solve` of the same data, and a warm rolling
 sequence factorizes each visited penalty exactly once per workspace. A cache
 miss remains a full \(O(nr^2)\) recomputation:
-\(B=\operatorname{diag}(d)+(\sigma+\rho)I\) reweights every entry of \(S\),
+\(B=\mathrm{diag}(d)+(\sigma+\rho)I\) reweights every entry of \(S\),
 so no rank-one update shortcut exists in this formulation.
 
 ## 4b. Rolling sequences (`solve_sequence`)
@@ -250,7 +250,7 @@ Returned multipliers use these sign conventions:
   nonnegative at the upper bound;
 - L1 duals \(y_t\) (present only with an L1 term) are subgradients of the
   weighted L1 cost: \(|(y_t)_i|\le c_i\) always, and
-  \((y_t)_i=c_i\operatorname{sign}(x_i-a_i)\) where the asset trades.
+  \((y_t)_i=c_i\mathrm{sign}(x_i-a_i)\) where the asset trades.
 
 Stationarity is
 

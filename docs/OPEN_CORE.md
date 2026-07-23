@@ -2,11 +2,11 @@
 
 **This document is the single source of truth for "what is open" in Ledge.**
 
-> **Current state (2026-07-22): release gate applied.** The reviewed tree is
-> licensed Apache-2.0, targets version `0.2.0`, and uses Rust package
-> `ledge-portfolio` (library `ledge`). The existing repository is retained as
-> the historical private archive; creating the clean-root public repository
-> and publishing registry artifacts remain explicit maintainer actions in §5.
+> **Current state (2026-07-23): `0.2.0` published.** The reviewed Apache-2.0
+> tree is live in the clean-root public repository, Rust packages
+> `ledge-core` / `ledge-portfolio` and Python distribution `ledge-portfolio`
+> are published, and the documentation site is deployed. Section 5 is
+> retained as the release-control runbook for future versions.
 
 It answers three questions the maintainer keeps asking:
 
