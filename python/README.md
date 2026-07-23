@@ -8,11 +8,15 @@ workflow builds abi3 wheels for the supported platforms.
 Each distribution includes the Apache-2.0 project license and the generated
 Rust dependency notices in `THIRD_PARTY_LICENSES.html`.
 
-Registry install after the `0.2.0` artifacts are published:
+Install the published `0.2.0` release:
 
 ```bash
 python -m pip install ledge-portfolio==0.2.0
 ```
+
+Release `0.2.0` provides abi3 wheels for Linux x86-64/aarch64, macOS
+universal2, and Windows x86-64. Other platforms build from the source
+distribution and require a Rust toolchain.
 
 From the repository root:
 

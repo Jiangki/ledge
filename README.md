@@ -1,6 +1,9 @@
 # Ledge
 
 [![CI](https://github.com/Jiangki/ledge/actions/workflows/ci.yml/badge.svg)](https://github.com/Jiangki/ledge/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/ledge-portfolio.svg)](https://pypi.org/project/ledge-portfolio/)
+[![crates.io](https://img.shields.io/crates/v/ledge-portfolio.svg)](https://crates.io/crates/ledge-portfolio)
+[![Docs](https://img.shields.io/badge/docs-mdBook-4b5563.svg)](https://jiangki.github.io/ledge/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-alpha%200.2.0-orange.svg)](CHANGELOG.md)
 
@@ -10,7 +13,7 @@ Ledge solves continuous convex portfolio QPs **without expanding** the factor
 covariance
 
 $$
-\Sigma = F\Omega F^{\mathsf{T}} + \operatorname{diag}(d)
+\Sigma = F\Omega F^{\mathsf{T}} + \mathrm{diag}(d)
 $$
 
 into a dense asset-by-asset matrix. The practical target is repeated,
@@ -21,16 +24,23 @@ modest number of linear constraints.
   <img src="docs/assets/factor-structure.svg" alt="Factor covariance structure: Sigma = F Omega F^T + D" width="920" />
 </p>
 
-**Status:** alpha (`0.2.0`). Residuals are auditable; APIs and defaults may
-change before 1.0. This is usable early software, not a production risk system.
+**Status:** alpha (`0.2.0`). The release is available from
+[PyPI](https://pypi.org/project/ledge-portfolio/), [crates.io
+(`ledge-portfolio`)](https://crates.io/crates/ledge-portfolio), and
+[crates.io (`ledge-core`)](https://crates.io/crates/ledge-core).
+The Python import and Rust library name are both `ledge`.
 
-Ledge is licensed under [Apache-2.0](LICENSE). The complete open-core boundary,
-clean-history publication procedure, and package-release controls live in the
-[release runbook](docs/OPEN_CORE.md) and [maintainer sign-off
-checklist](docs/PUBLIC_RELEASE_CHECKLIST.md).
+> [!WARNING]
+> APIs and defaults may change before 1.0. Ledge exposes auditable residuals,
+> but it is not a production risk system or a substitute for independent
+> validation.
 
-Rust package / library name: `ledge-portfolio` / `ledge`. Python distribution /
-import name: `ledge-portfolio` / `ledge`.
+**[Documentation](https://jiangki.github.io/ledge/)** ·
+**[Python quick start](#five-minute-python-example)** ·
+**[Rust API](#rust-api)** ·
+**[Benchmarks](#performance-smoke)** ·
+**[Limitations](#limitations)** ·
+**[Contributing](CONTRIBUTING.md)**
 
 <p align="center">
   <img src="docs/assets/terminal-demo.gif" alt="Animated terminal capture of a seeded release-build Ledge solve reaching Solved with audited residuals" width="920" />
@@ -50,26 +60,41 @@ reproduction script live in [`docs/assets/`](docs/assets/README.md).
 - **Researchers and practitioners** who want reproducible factor-QP examples and
   independently inspectable KKT residuals.
 
-## Install
+## Why Ledge?
+
+| Need | What Ledge provides |
+|---|---|
+| Preserve factor structure | Accepts `F`, `omega`, and `d` directly; never materializes dense covariance |
+| Rebalance repeatedly | Cached equilibration/factorizations plus automatic primal-dual warm starts |
+| Model trading costs | Smooth L2 turnover and exact L1 proportional costs with a no-trade region |
+| Audit solver output | Original-space KKT residuals, diagnostics, polishing, and infeasibility certificates |
+| Embed without a service | Pure-Rust core, a public Rust API, and NumPy bindings that release the GIL |
+
+## Quick start
 
 Requirements: Rust 1.83+; Python 3.9+ for the bindings.
+
+Python:
+
+```bash
+python -m pip install ledge-portfolio==0.2.0
+```
+
+Rust:
+
+```toml
+[dependencies]
+ledge = { package = "ledge-portfolio", version = "0.2" }
+```
+
+Run the repository examples or build the Python package from source:
 
 ```bash
 git clone https://github.com/Jiangki/ledge.git
 cd ledge
 cargo test --workspace
 cargo run -p ledge-portfolio --release --example rebalance
-```
 
-Python registry install (after the `0.2.0` artifacts are published):
-
-```bash
-python -m pip install ledge-portfolio==0.2.0
-```
-
-Build from source:
-
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip maturin
@@ -77,12 +102,8 @@ python -m pip install -e python/
 python python/examples/rebalance.py
 ```
 
-Rust registry dependency:
-
-```toml
-[dependencies]
-ledge = { package = "ledge-portfolio", version = "0.2" }
-```
+Platform wheels are published for Linux x86-64/aarch64, macOS universal2,
+and Windows x86-64. Other platforms build from the source distribution.
 
 ## Five-minute Python example
 
@@ -159,24 +180,28 @@ is executed against cvxpy + Clarabel in CI.
 ```rust
 use ledge::{FactorCovariance, Matrix, PortfolioProblem, SolveStatus};
 
-let factors = Matrix::new(3, 1, vec![1.0, -0.5, 0.25])?;
-let problem = PortfolioProblem::new(
-    factors,
-    FactorCovariance::Diagonal(vec![0.1]),
-    vec![0.2, 0.3, 0.25],
-    vec![0.08, 0.04, 0.06],
-)?
-.with_risk_aversion(5.0)?
-.with_bounds(vec![0.0; 3], vec![0.6; 3])?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let factors = Matrix::new(3, 1, vec![1.0, -0.5, 0.25])?;
+    let problem = PortfolioProblem::new(
+        factors,
+        FactorCovariance::Diagonal(vec![0.1]),
+        vec![0.2, 0.3, 0.25],
+        vec![0.08, 0.04, 0.06],
+    )?
+    .with_risk_aversion(5.0)?
+    .with_bounds(vec![0.0; 3], vec![0.6; 3])?;
 
-let solution = problem.solve(None)?;
-assert_eq!(solution.status, SolveStatus::Solved);
-println!("{:?}", solution.x);
-# Ok::<(), Box<dyn std::error::Error>>(())
+    let solution = problem.solve(None)?;
+    assert_eq!(solution.status, SolveStatus::Solved);
+    println!("{:?}", solution.x);
+    Ok(())
+}
 ```
 
 Use `solution.warm_start()` for a full primal/dual warm start. The lower-level
-`QpProblem` API remains available for custom continuous convex QPs.
+`QpProblem` API remains available for custom continuous convex QPs. API docs:
+[`ledge`](https://docs.rs/ledge-portfolio) and
+[`ledge-core`](https://docs.rs/ledge-core).
 
 ## Architecture
 
@@ -238,6 +263,19 @@ Use `solution.warm_start()` for a full primal/dual warm start. The lower-level
   portfolio constraints.
 - Installable PyO3 package (releases the GIL while solving).
 - Deterministic Rust / Python examples.
+
+## Documentation
+
+| Topic | Resource |
+|---|---|
+| Guided tutorials and API overview | [mdBook documentation](https://jiangki.github.io/ledge/) |
+| Python installation and first solve | [Python quick start](https://jiangki.github.io/ledge/tutorial/quickstart-python.html) |
+| Rust installation and first solve | [Rust quick start](https://jiangki.github.io/ledge/tutorial/quickstart-rust.html) |
+| Rolling rebalances and batch solves | [Rolling tutorial](https://jiangki.github.io/ledge/tutorial/rolling.html) · [Batch tutorial](https://jiangki.github.io/ledge/tutorial/batch.html) |
+| Constraints, turnover, diagnostics, tuning | [Guides](https://jiangki.github.io/ledge/guide/constraints.html) · [Tuning reference](https://jiangki.github.io/ledge/reference/tuning.html) |
+| Migration from cvxpy | [`docs/cvxpy_migration.md`](docs/cvxpy_migration.md) |
+| Mathematics and design | [`docs/algorithm.md`](docs/algorithm.md) · [`docs/factor_structure_note.md`](docs/factor_structure_note.md) |
+| Reproducible performance evidence | [`benchmarks/README.md`](benchmarks/README.md) · [`docs/SMOKE_TIMINGS.md`](docs/SMOKE_TIMINGS.md) |
 
 ## Performance smoke
 
@@ -330,34 +368,21 @@ cvxpy + Clarabel.
   polishing step; those solves return ADMM-tolerance (~1e-5) residuals
   instead of polished (~1e-11) ones. `SolveResult.polished` reports which.
 
-## Roadmap
+## Project status and roadmap
 
-Public technical plan and milestones: [`docs/PLAN.md`](docs/PLAN.md),
+Release `0.2.0` ships the Rust crates, Python wheels, documentation site,
+factor-aware benchmarks, scaling, exact L1 costs, polishing, certificates,
+rolling sequences, and account batching.
+
+The next priorities are evidence and stability rather than a broader solver
+scope:
+
+1. collect redacted real workloads and turn failures into regression tests;
+2. evaluate sparse factor storage only when those workloads justify it;
+3. complete the API, MSRV, semver, and deprecation review before 1.0.
+
+Detailed milestones: [`docs/PLAN.md`](docs/PLAN.md) and
 [`docs/ROADMAP.md`](docs/ROADMAP.md).
-
-Near-term theme: **complete the public-release gate without weakening
-trust**. Immediate priorities:
-
-1. ~~Automatic scaling (Ruiz / equilibration) and large-instance reliability~~
-   — landed; smoke matrix now passes at $n=5000, k=100$
-2. **PyPI wheels**; ~~fair OSQP/Clarabel comparison~~ — first protocol
-   report published under `benchmarks/results/2026-07/`
-3. ~~Exact L1 turnover~~ — landed, dedicated soft-threshold prox block
-   with audited subgradients; ~~polishing~~ — landed, audit-gated
-   active-set refinement to ~1e-11 residuals by default; ~~infeasibility
-   certificates~~ — landed with auditable Farkas / descent-ray proofs and
-   portfolio-vocabulary hints; ~~solve sequences~~ — `PortfolioSequence` /
-   `solve_sequence` landed (Rust + Python); ~~tracking-error objectives
-   and rolling example~~ — landed (`docs/examples/`)
-4. M3 vertical productization: ~~constraint templates~~ — landed
-   (industry / group / style / concentration / short-limit builders);
-   ~~problem & solution serialization~~ — landed (`serde` feature,
-   Python `to_json` / `from_json`); ~~multi-thread batch over the
-   account axis~~ — landed (`solve_batch`, non-default `rayon` feature,
-   published 1×500×250 throughput); ~~docs site~~ — landed as an mdBook
-   built in CI (`docs/book/`; public deployment waits on the
-   public-release gate)
-5. Later: 1.0 API/MSRV/deprecation review after external workload evidence
 
 ## Non-goals
 
@@ -369,8 +394,10 @@ trust**. Immediate priorities:
 
 ## Security
 
-Please do not file public issues for sensitive reports. See
-[`SECURITY.md`](SECURITY.md).
+Ledge is not hardened for untrusted inputs in a multi-tenant service. Please
+do not file public issues for sensitive reports; follow
+[`SECURITY.md`](SECURITY.md). The latest repository audit is recorded in
+[`docs/SECURITY_AUDIT.md`](docs/SECURITY_AUDIT.md).
 
 ## Repository layout
 
@@ -383,18 +410,14 @@ docs/book/             mdBook docs site source (built in CI; `mdbook build docs/
 docs/examples/         rolling backtest example + published warm-start numbers
 docs/assets/           reproducible README diagrams, chart, terminal GIF + provenance
 benchmarks/            comparison protocol, adapters (non-default features), results
-.github/workflows/     CI + manual release/docs deploy (strict-gated on public release)
+.github/workflows/     CI + manual release/docs deployment
 .github/ISSUE_TEMPLATE/  bug / performance / problem-instance templates
 ```
 
-Further reading: [`docs/PLAN.md`](docs/PLAN.md),
-[`docs/ROADMAP.md`](docs/ROADMAP.md),
+Project governance and release controls:
 [`docs/DECISIONS.md`](docs/DECISIONS.md),
-[`docs/OPEN_CORE.md`](docs/OPEN_CORE.md),
-[`docs/algorithm.md`](docs/algorithm.md),
-[`docs/factor_structure_note.md`](docs/factor_structure_note.md),
-[`docs/cvxpy_migration.md`](docs/cvxpy_migration.md),
-[`docs/SMOKE_TIMINGS.md`](docs/SMOKE_TIMINGS.md).
+[`docs/OPEN_CORE.md`](docs/OPEN_CORE.md), and
+[`docs/PUBLIC_RELEASE_CHECKLIST.md`](docs/PUBLIC_RELEASE_CHECKLIST.md).
 
 ## License
 

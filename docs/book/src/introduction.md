@@ -7,7 +7,7 @@ It solves continuous convex mean-variance portfolio QPs whose covariance has
 factor structure
 
 \\[
-\Sigma = F \Omega F^\mathsf{T} + \operatorname{diag}(d)
+\Sigma = F \Omega F^\mathsf{T} + \mathrm{diag}(d)
 \\]
 
 **without ever forming the dense \\(n \times n\\) matrix**. Inputs are the
@@ -50,5 +50,7 @@ but the project makes no default-settings promise.
 Alpha (`0.2.x`). APIs and defaults may change before 1.0; every change is
 recorded in the repository
 [CHANGELOG](https://github.com/Jiangki/ledge/blob/main/CHANGELOG.md). Source is
-licensed Apache-2.0; crates.io/PyPI availability is verified separately for
-each tagged release on the [roadmap](reference/design.md).
+licensed Apache-2.0. Release `0.2.0` is available from
+[PyPI](https://pypi.org/project/ledge-portfolio/) and
+[crates.io](https://crates.io/crates/ledge-portfolio); see
+[Installation](tutorial/installation.md) for package names and platforms.

@@ -54,16 +54,16 @@ honest comparison.
 | 1.3 | Unscaled residual reporting: `check_kkt` always on original data | Done — termination and all reported residuals use original data |
 | 1.4 | Expand smoke matrix to \(n=5000\), \(k=100\); update [`SMOKE_TIMINGS.md`](SMOKE_TIMINGS.md) and README support statement | Done — full matrix Solved under defaults (2026-07-21) |
 | 1.5 | Over-relaxation (\(\alpha \approx 1.6\)) and optional vector ρ | Over-relaxation done — default `over_relaxation: 1.6`, smoke-matrix iterations cut 1.7–2.9x (n=5000: 1680 → 660); see Technical notes §1a. Vector ρ re-evaluated 2026-07-22 with a measured prototype and **stays deferred**: no static per-block factor wins across the smoke matrix (1.6x gains at n=1000/2000 with explicit rows, 1.6x losses at n=5000); see [`DECISIONS.md`](DECISIONS.md) |
-| 1.6 | **Public-release gate** — Apache-2.0, resolve the occupied crates.io `ledge` package name, enable publishing, publish a clean-root GitHub repository | Gate tree done; clean-root repository creation is the remaining maintainer action; follow [`OPEN_CORE.md`](OPEN_CORE.md) §5 |
-| 1.7 | `maturin-action` wheels + PyPI Trusted Publishing → `ledge-portfolio 0.2.0` | Workflow done — manual `release.yml`, strict-gate/tag guarded; first publish waits on Trusted Publisher/environment setup |
+| 1.6 | **Public-release gate** — Apache-2.0, resolve the occupied crates.io `ledge` package name, enable publishing, publish a clean-root GitHub repository | Done — clean-root public repository and `v0.2.0` tag published |
+| 1.7 | `maturin-action` wheels + PyPI Trusted Publishing → `ledge-portfolio 0.2.0` | Done — abi3 wheels and sdist published to PyPI |
 | 1.8 | OSQP / Clarabel adapters (non-default features) + first protocol report | Done — `benchmarks/adapters`, report in `benchmarks/results/2026-07/` |
 | 1.9 | Short technical note: “why factor structure is worth exploiting” using 1.8 data | Done — [`factor_structure_note.md`](factor_structure_note.md): measured dense-Q vs lifted gap (1–2 orders of magnitude inside the same solver), SMW cost model, what native factor form adds beyond lifting, honest large-n limits; every number cited from published reports |
 
 **Exit criteria:**
 
 - `n=2000, k=50` Solved under defaults.
-- Repository licensed Apache-2.0 — done; clean-root publication and
-  `pip install ledge-portfolio` registry verification remain maintainer steps.
+- Repository licensed Apache-2.0 and published from a clean root — done;
+  `pip install ledge-portfolio==0.2.0` verified against PyPI.
 - Comparison report published and satisfies all rules in
   [`../benchmarks/README.md`](../benchmarks/README.md).
 
@@ -109,13 +109,12 @@ keeping the repository boundary mechanically checkable.
 | 3.2 | Multi-thread batch over the account axis (`rayon`, feature-gated); publish “1×500×250” throughput | Done — `solve_batch(&[BatchAccount], settings)` runs one `PortfolioSequence` per account, in parallel over accounts behind the non-default `rayon` feature (serial with identical results without it); optional backtest anchor chaining (`chain_previous_weights`); per-account error isolation; Python `ledge.solve_batch(problems, steps, ...)`. Published: 1 model × 500 accounts × 250 dates (n=200, k=15) in 12.9 s on 4 vCPUs = 9.7k solves/s, 4.0x over serial ([`benchmarks/results/2026-07-batch/`](../benchmarks/results/2026-07-batch/README.md)); see Technical notes §8 |
 | 3.3 | Problem / solution serialization (serde + JSON/binary) for bug reproduction | Done — non-default `serde` feature on `ledge-core` / `ledge-portfolio`: `QpProblem`, `PortfolioProblem`, `SolverSettings`, `WarmStart`, `Solution` (duals, residuals, certificates included) work with any serde format; deserialization re-runs construction validation; Python `PortfolioProblem.to_json()` / `from_json()` and `SolveResult.to_json()`; see Technical notes §7 |
 | 3.4 | Evaluate sparse `F`; implement CSR path only if real workloads need it | |
-| 3.5 | mdBook + GitHub Pages docs site (tutorial, migration, API, tuning) | Done (build) — `docs/book/` with tutorial / guide / reference chapters; CI builds it on every push (`docs` job, artifact). **Public Pages deployment is deliberately manual-only** (`docs-deploy.yml`) until the 1.6 public-release gate; see [`DECISIONS.md`](DECISIONS.md) |
+| 3.5 | mdBook + GitHub Pages docs site (tutorial, migration, API, tuning) | Done — `docs/book/` with tutorial / guide / reference chapters; CI builds it on every push, and `docs-deploy.yml` publishes the public Pages site manually |
 | 3.6 | **Open-core boundary review** — verify new workflows remain in-core and no private implementation entered this tree | Done — [`OPEN_CORE.md`](OPEN_CORE.md) + `scripts/check_open_core.sh` |
 
 **Exit criteria:** batch throughput published — done
 ([`benchmarks/results/2026-07-batch/`](../benchmarks/results/2026-07-batch/README.md));
-docs site built in CI — done (public deployment intentionally waits on the
-1.6 gate); repository boundary recorded in
+docs site built in CI and deployed to GitHub Pages — done; repository boundary recorded in
 [`OPEN_CORE.md`](OPEN_CORE.md) — done.
 
 ---
