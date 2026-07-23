@@ -1,0 +1,54 @@
+name: Performance / convergence
+description: Slow solves, MaxIterations, or unexpected iteration counts.
+title: "perf: "
+labels: ["performance"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share timing and convergence facts. Follow the honesty rules in
+        `docs/SMOKE_TIMINGS.md` and `benchmarks/README.md` when comparing
+        solvers — same instance, KKT re-check, machine metadata.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is slow or failing to converge?
+    validations:
+      required: true
+  - type: input
+    id: shape
+    attributes:
+      label: Instance shape
+      placeholder: "n=2000, k=50, m_eq=1, m_ineq=20, L2 turnover on"
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Solver settings
+      description: Tolerances, max_iterations, adaptive ρ, warm start, scaling (once available).
+      placeholder: "defaults; warm_start=previous weights"
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: Status, iterations, wall time, final primal/dual residuals, objective.
+    validations:
+      required: true
+  - type: textarea
+    id: machine
+    attributes:
+      label: Machine / build
+      description: CPU, OS, release vs debug, ledge commit or version.
+      placeholder: "4-vCPU Xeon, Linux, --release, ledge-portfolio 0.2.0"
+    validations:
+      required: true
+  - type: textarea
+    id: comparison
+    attributes:
+      label: Comparison (optional)
+      description: |
+        If comparing to OSQP/Clarabel/others, confirm same instance and
+        that you re-checked KKT independently. Paste protocol metadata if
+        available.

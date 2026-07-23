@@ -1,0 +1,27 @@
+[package]
+name = "ledge-python"
+description = "Python bindings for factor-model portfolio optimization with Ledge"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[lib]
+name = "_ledge"
+crate-type = ["cdylib"]
+
+[dependencies]
+numpy = "0.29.0"
+pyo3 = { version = "0.29.0", features = ["extension-module", "abi3-py39"] }
+# float_roundtrip: bug-reproduction dumps must parse back bit-identically.
+serde_json = { version = "1", features = ["float_roundtrip"] }
+
+[dependencies.ledge]
+package = "ledge-portfolio"
+path = "../crates/ledge"
+version = "0.2.0"
+features = ["rayon", "serde"]

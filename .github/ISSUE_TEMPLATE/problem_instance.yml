@@ -1,0 +1,58 @@
+name: Problem instance / workload
+description: Offer a redacted real workload or synthetic generator seed for the regression set.
+title: "instance: "
+labels: ["instance"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        External real workloads are the most valuable input for Ledge.
+        **Do not upload proprietary holdings, expected returns, or full
+        factor matrices.** Prefer dimensions, statistics, and generator
+        seeds — or redacted artifacts you are allowed to share.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What are you sharing?
+      options:
+        - Synthetic generator parameters / seed
+        - Redacted real workload (explicitly allowed to share)
+        - Public-data recipe (sources + construction steps)
+        - Only a description for now
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: Shape and statistics
+      description: |
+        n, k, constraint counts, Ω diagonal vs dense, ranges for d / μ /
+        bounds, how often the sequence rebalances, what changes between
+        dates (μ only? F too?).
+    validations:
+      required: true
+  - type: textarea
+    id: pain
+    attributes:
+      label: Pain point
+      description: Why does this instance matter? (time, MaxIterations, constraint type, batch size, …)
+    validations:
+      required: true
+  - type: textarea
+    id: artifact
+    attributes:
+      label: How to reproduce
+      description: |
+        Seed, script, or link to a redacted artifact. Prefer
+        Apache-2.0-compatible data. If you can share the instance itself,
+        `problem.to_json()` (and `result.to_json()` for what Ledge
+        returned) produces a lossless replayable dump — same in Rust via
+        the `serde` feature.
+      render: text
+  - type: checkboxes
+    id: license
+    attributes:
+      label: Sharing confirmation
+      options:
+        - label: I confirm this does not include proprietary holdings or models I am not allowed to share.
+          required: true

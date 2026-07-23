@@ -1,0 +1,46 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "ledge-portfolio"
+version = "0.2.0"
+description = "Factor-structured mean-variance portfolio optimization"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.html"]
+authors = [{ name = "The Ledge Authors" }]
+dependencies = ["numpy>=1.24"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Rust",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Office/Business :: Financial :: Investment",
+]
+keywords = [
+  "portfolio",
+  "optimization",
+  "quadratic-programming",
+  "factor-model",
+  "mean-variance",
+]
+
+[project.optional-dependencies]
+# Gold-standard oracle tests; cvxpy ships the Clarabel solver by default.
+test = ["pytest>=8", "cvxpy>=1.5"]
+
+[project.urls]
+Homepage = "https://github.com/Jiangki/ledge"
+Repository = "https://github.com/Jiangki/ledge"
+Issues = "https://github.com/Jiangki/ledge/issues"
+Changelog = "https://github.com/Jiangki/ledge/blob/main/CHANGELOG.md"
+
+[tool.maturin]
+manifest-path = "Cargo.toml"
+python-source = "."
+module-name = "ledge._ledge"
+bindings = "pyo3"

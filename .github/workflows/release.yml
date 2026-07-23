@@ -1,0 +1,126 @@
+# Manual release workflow. Run only from the reviewed version tag after
+# `scripts/check_open_core.sh --release` passes; PyPI publishing additionally
+# requires the `pypi` environment and Trusted Publisher.
+name: Build and publish release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag/version (for example v0.2.0)"
+        required: true
+        type: string
+      publish_pypi:
+        description: "Publish the built distributions to PyPI"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: Strict release preflight
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check version and open-core gate
+        shell: bash
+        run: |
+          version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | sed -n '1p')"
+          test "${{ inputs.tag }}" = "v${version}" || {
+            echo "::error::input tag ${{ inputs.tag }} does not match Cargo version v${version}"
+            exit 1
+          }
+          test "$GITHUB_REF" = "refs/tags/${{ inputs.tag }}" || {
+            echo "::error::select tag ${{ inputs.tag }} as the workflow ref (got $GITHUB_REF)"
+            exit 1
+          }
+          test "$(sed -n 's/^version = "\(.*\)"/\1/p' python/pyproject.toml | sed -n '1p')" = "$version"
+          ./scripts/check_open_core.sh --release
+
+  wheels:
+    name: Wheel (${{ matrix.platform }})
+    needs: preflight
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux-x86_64
+            runner: ubuntu-latest
+            target: x86_64
+            manylinux: "2014"
+          - platform: linux-aarch64
+            runner: ubuntu-latest
+            target: aarch64
+            manylinux: "2014"
+          - platform: macos-universal2
+            runner: macos-latest
+            target: universal2-apple-darwin
+            manylinux: "off"
+          - platform: windows-x86_64
+            runner: windows-latest
+            target: x86_64-pc-windows-msvc
+            manylinux: "off"
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          # pyo3 abi3-py39: one wheel supports CPython 3.9 and newer.
+          python-version: "3.9"
+      - name: Build wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: python
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --release --locked --out dist
+      - name: Upload wheel
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-wheel-${{ matrix.platform }}
+          path: python/dist/*.whl
+          if-no-files-found: error
+
+  sdist:
+    name: Source distribution
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: python
+          command: sdist
+          # `maturin sdist` does not accept Cargo's `--locked` flag. The
+          # workspace Cargo.lock is included and wheel builds are locked.
+          args: --out dist
+      - name: Upload sdist
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-sdist
+          path: python/dist/*.tar.gz
+          if-no-files-found: error
+
+  publish-pypi:
+    name: Publish to PyPI
+    if: ${{ inputs.publish_pypi }}
+    needs: [wheels, sdist]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ledge-portfolio
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v8
+        with:
+          pattern: python-*
+          path: dist
+          merge-multiple: true
+      - name: Publish with PyPI Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1

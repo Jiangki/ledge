@@ -1,0 +1,51 @@
+[package]
+name = "ledge-core"
+description = "Factor-structured convex QP kernel for portfolio optimization"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+keywords = ["finance", "portfolio", "optimization", "quadratic-program", "factor-model"]
+categories = ["algorithms", "mathematics", "science"]
+
+[features]
+# Exposes doc(hidden) solver internals (reduced factorization, x-update) so
+# criterion benches can measure them in isolation. Never enable downstream.
+bench-internals = []
+# Multi-thread batch over the account axis (roadmap 3.2): `solve_batch`
+# distributes accounts over rayon's global thread pool. Without the feature
+# the same function runs the accounts serially with identical results.
+rayon = ["dep:rayon"]
+# Serialize / Deserialize for problems, settings, warm starts, and solutions
+# (roadmap 3.3): attach a JSON or binary dump to a bug report and replay it
+# elsewhere. Deserialization re-runs the same validation as construction.
+serde = ["dep:serde"]
+
+[dependencies]
+rayon = { version = "1", optional = true }
+serde = { version = "1", features = ["derive"], optional = true }
+thiserror = "2"
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+criterion = "0.7"
+postcard = { version = "1", features = ["use-std"] }
+proptest = "1.9"
+# float_roundtrip: bug-reproduction dumps must parse back bit-identically.
+serde_json = { version = "1", features = ["float_roundtrip"] }
+
+[[bench]]
+name = "solver"
+harness = false
+required-features = ["bench-internals"]
+
+[[test]]
+name = "serde"
+required-features = ["serde"]

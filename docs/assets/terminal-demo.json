@@ -1,0 +1,10 @@
+{
+  "captured_at": "2026-07-22",
+  "command": "cargo run -q -p ledge-portfolio --release --example synthetic -- --n 500 --k 10 --seed 42",
+  "output": [
+    "| instance | solver | status | objective | primal residual | dual residual | iterations | time (ms) |",
+    "|---|---|---:|---:|---:|---:|---:|---:|",
+    "| factor-n500-k10-s42 | ledge | Solved | -1.75016794e-2 | 2.409e-14 | 3.875e-14 | 90 | 3.094 |"
+  ],
+  "purpose": "Real release-build output captured for the README terminal demo; timing is machine-dependent and is not a benchmark."
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-label="Factor covariance structure used by Ledge">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7fafc"/>
+      <stop offset="100%" stop-color="#edf2f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="360" rx="16" fill="url(#bg)" stroke="#cbd5e0"/>
+  <text x="32" y="42" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#1a202c">Factor covariance without dense Sigma</text>
+  <text x="32" y="72" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#4a5568">Ledge keeps F, Omega, and d separate and uses an SMW-reduced KKT system</text>
+
+  <rect x="40" y="120" width="120" height="160" rx="8" fill="#ebf8ff" stroke="#3182ce" stroke-width="2"/>
+  <text x="100" y="150" text-anchor="middle" font-family="ui-monospace, monospace" font-size="20" fill="#2b6cb0">F</text>
+  <text x="100" y="178" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#2c5282">n x k</text>
+  <text x="100" y="210" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#4a5568">factor</text>
+  <text x="100" y="228" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#4a5568">exposures</text>
+
+  <rect x="200" y="150" width="100" height="100" rx="8" fill="#faf5ff" stroke="#805ad5" stroke-width="2"/>
+  <text x="250" y="195" text-anchor="middle" font-family="ui-monospace, monospace" font-size="18" fill="#6b46c1">Omega</text>
+  <text x="250" y="222" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#553c9a">k x k</text>
+
+  <rect x="340" y="120" width="70" height="160" rx="8" fill="#fffff0" stroke="#d69e2e" stroke-width="2"/>
+  <text x="375" y="195" text-anchor="middle" font-family="ui-monospace, monospace" font-size="20" fill="#b7791f">D</text>
+  <text x="375" y="222" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#975a16">diag</text>
+  <text x="375" y="240" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#975a16">n</text>
+
+  <text x="460" y="205" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#2d3748">=</text>
+
+  <rect x="500" y="130" width="380" height="140" rx="10" fill="#ffffff" stroke="#a0aec0" stroke-width="1.5"/>
+  <text x="690" y="175" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#1a202c">Sigma = F Omega F^T + D</text>
+  <text x="690" y="210" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#4a5568">never materialize the n x n matrix</text>
+  <text x="690" y="235" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#4a5568">when k &lt;&lt; n and constraints are few</text>
+
+  <text x="32" y="330" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#718096">Mean-variance portfolio QP · continuous convex · no dense covariance expansion</text>
+</svg>

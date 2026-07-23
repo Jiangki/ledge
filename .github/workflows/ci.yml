@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    name: Rust tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Test
+        run: cargo test --workspace
+      - name: Serialization tests (serde feature)
+        run: cargo test -p ledge-core --features serde
+      - name: Batch tests (rayon feature)
+        run: cargo test -p ledge-core --features rayon --test batch
+      - name: Benches compile
+        run: cargo bench -p ledge-core --features bench-internals --no-run
+      - name: Release smoke example
+        run: cargo run -p ledge-portfolio --release --example rebalance
+      - name: Rolling sequence example
+        run: cargo run -p ledge-portfolio --release --example sequence
+      - name: Batch example (rayon, reduced size)
+        run: >-
+          cargo run -p ledge-portfolio --release --features rayon --example batch --
+          --accounts 24 --dates 12 --n 60 --k 6
+
+  # Independent of the rust job so adapter breakages stay visible when
+  # fmt/clippy fail first (they previously skipped this step on the same job).
+  adapters:
+    name: Comparison adapters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          # Separate key prefix so this job does not thrash the default-feature
+          # rust-job cache with OSQP/Clarabel native build artifacts.
+          prefix-key: adapters-v1
+      - name: Adapter tests (OSQP + Clarabel)
+        run: cargo test -p ledge-bench-adapters --features osqp,clarabel
+
+  # Builds the mdBook docs site and uploads it as an artifact. Public
+  # GitHub Pages deployment is deliberately not wired up: it waits on the
+  # public-release gate (roadmap 1.6) because Pages would expose the site.
+  docs:
+    name: Docs site (build only)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mdBook
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.52/mdbook-v0.4.52-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz -C "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Build book
+        run: |
+          ./scripts/check_open_core.sh
+          python scripts/generate_demo_assets.py --check
+          mdbook build docs/book
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: docs/book/book
+          retention-days: 14
+
+  python:
+    name: Python binding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: Swatinem/rust-cache@v2
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip maturin
+          python -m pip install -e "python/[test]"
+      - name: API and gold-standard tests
+        run: python -m pytest python/tests -q
+      - name: Examples
+        run: |
+          python python/examples/rebalance.py
+          python python/examples/rolling.py

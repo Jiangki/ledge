@@ -1,0 +1,63 @@
+name: Bug report
+description: Incorrect result, panic, unexpected status, or API breakage.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Ledge. Please keep reports reproducible.
+        Do **not** paste proprietary holdings or proprietary risk models.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: "Rust crate / Python package / OS / Python version"
+      placeholder: "ledge-portfolio 0.2.0, Python 3.12, Ubuntu 22.04"
+    validations:
+      required: true
+  - type: dropdown
+    id: api
+    attributes:
+      label: API surface
+      options:
+        - Rust (`ledge` / `ledge-core`)
+        - Python (`ledge-portfolio`)
+        - Both / unclear
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: |
+        Smallest script or Rust snippet that fails. Prefer synthetic data.
+        If the data itself matters and is shareable, attach
+        `problem.to_json()` and `result.to_json()` (Python), or a serde
+        dump from Rust (`serde` feature) — those replay bit-exactly.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+      description: Include status, residuals, objective, or panic message.
+    validations:
+      required: true
+  - type: textarea
+    id: problem_shape
+    attributes:
+      label: Problem shape (if relevant)
+      description: |
+        Dimensions and coarse statistics only — e.g. n, k, #equalities,
+        #inequalities, whether Ω is diagonal/dense, order-of-magnitude ranges
+        for d / μ / bounds. No proprietary matrices.
+      placeholder: "n=800, k=12, 1 equality, 40 inequalities, Ω diagonal, d in [1e-4, 1e-1]"

@@ -1,0 +1,31 @@
+[package]
+name = "ledge-portfolio"
+description = "Factor-structured mean-variance portfolio optimization"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+keywords = ["finance", "portfolio", "optimization", "quadratic-program", "factor-model"]
+categories = ["algorithms", "mathematics", "science"]
+
+[lib]
+name = "ledge"
+
+[features]
+# Multi-thread batch over the account axis — see `ledge-core`'s feature of
+# the same name.
+rayon = ["ledge-core/rayon"]
+# Serialize / Deserialize for problems, settings, warm starts, and solutions
+# (JSON or any serde format) — see `ledge-core`'s feature of the same name.
+serde = ["ledge-core/serde"]
+
+[dependencies]
+ledge-core = { path = "../ledge-core", version = "0.2.0" }
+
+[lints]
+workspace = true

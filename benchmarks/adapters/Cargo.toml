@@ -1,0 +1,31 @@
+[package]
+name = "ledge-bench-adapters"
+description = "OSQP / Clarabel comparison adapters implementing the Ledge benchmark protocol"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[features]
+# Each external solver hides behind a non-default feature so the default
+# workspace build never compiles or links extra native dependencies
+# (benchmarks/README.md, "External solver hook").
+default = []
+osqp = ["dep:osqp"]
+clarabel = ["dep:clarabel"]
+
+[dependencies]
+ledge-core = { path = "../../crates/ledge-core", version = "0.2.0" }
+osqp = { version = "1.0.1", optional = true }
+clarabel = { version = "0.11.1", optional = true }
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "compare"
+path = "src/bin/compare.rs"

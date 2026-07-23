@@ -1,0 +1,15 @@
+[book]
+title = "Ledge — factor-structured portfolio rebalancing"
+description = "Tutorial, guides, and reference for the Ledge solver (Rust + Python)."
+authors = ["Ledge maintainers"]
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/Jiangki/ledge"
+mathjax-support = true
+no-section-label = true
+
+[output.html.fold]
+enable = true
+level = 1
