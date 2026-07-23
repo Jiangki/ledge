@@ -1,13 +1,14 @@
 # Deploys the mdBook docs site to GitHub Pages.
 #
-# DELIBERATELY manual-only (workflow_dispatch) so documentation deployments
-# remain explicit. Add a `push: branches: [main]` trigger if continuous
-# deployment becomes preferable.
+# Deploys on every push to main (docs stay in sync with the default branch)
+# and still allows manual runs via workflow_dispatch.
 #
 # Prerequisite: repository Settings -> Pages -> Source = "GitHub Actions".
 name: Deploy docs
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
