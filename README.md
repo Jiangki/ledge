@@ -9,9 +9,9 @@ Factor-structured mean-variance portfolio optimization for Rust and Python.
 Ledge solves continuous convex portfolio QPs **without expanding** the factor
 covariance
 
-\[
-\Sigma = F\Omega F^\mathsf{T} + \operatorname{diag}(d)
-\]
+$$
+\Sigma = F\Omega F^{\mathsf{T}} + \operatorname{diag}(d)
+$$
 
 into a dense asset-by-asset matrix. The practical target is repeated,
 small-to-medium portfolio rebalancing with budget, box constraints, and a
@@ -187,7 +187,7 @@ Use `solution.warm_start()` for a full primal/dual warm start. The lower-level
 ## What is implemented
 
 - Native factor covariance (`F`, diagonal or dense PSD `omega`, `d`); no dense
-  \(\Sigma\) is formed.
+  $\Sigma$ is formed.
 - Mean-variance objective, budget, bounds, equalities, upper-form inequalities.
 - Smooth L2 turnover around previous weights, and exact L1 proportional
   transaction costs (`with_l1_turnover` / `l1_turnover_costs`) via a
@@ -265,10 +265,10 @@ settings including over-relaxation):
 | n=2000, k=50 | Solved | 260 | ~90 |
 | n=5000, k=100 | Solved | 660 | ~1100 |
 
-**Practical range today:** the declared envelope (\(n \le 5000\), \(k \le
-100\), few explicit constraints) passes the synthetic smoke matrix under
-default settings since automatic scaling landed. These are single-seed
-synthetic instances, not a guarantee for every real problem of this size.
+**Practical range today:** the declared envelope ($n \le 5000$, $k \le 100$,
+few explicit constraints) passes the synthetic smoke matrix under default
+settings since automatic scaling landed. These are single-seed synthetic
+instances, not a guarantee for every real problem of this size.
 
 Protocol-compliant OSQP/Clarabel comparisons are published under
 `benchmarks/results/` (adapters behind non-default features; see
@@ -302,12 +302,12 @@ full report before quoting a bar.
 
 ## L1 turnover
 
-Exact proportional transaction costs \(c^\mathsf{T}|w-w_0|\) are supported
+Exact proportional transaction costs $c^\mathsf{T}|w-w_0|$ are supported
 natively (`with_l1_turnover` in Rust, `l1_turnover_costs=` in Python — a
 scalar broadcasts to all assets). The term is handled by a dedicated
 soft-threshold proximal block inside ADMM, so the reduced factorization
 keeps its `factors + constraints` dimension — unlike an epigraph
-reformulation, which adds \(2n\) constraints and loses the factor-structure
+reformulation, which adds $2n$ constraints and loses the factor-structure
 advantage. The no-trade region is machine-exact, the L1 multipliers are
 audited like every other dual, and rolling sequences move the anchor
 without refactorizing. Validated against epigraph reformulations and
@@ -319,8 +319,8 @@ cvxpy + Clarabel.
 - Continuous convex QPs only — no integers, SOCP, or general NLP.
 - Problems infeasible by a margin below `infeasibility_tolerance` (default
   `1e-5`) stop at `MaxIterations` with hints rather than a certificate.
-- Dense storage of \(F\), dense \(\Omega\), and explicit constraint blocks;
-  unsuitable when explicit constraints are \(O(n)\).
+- Dense storage of $F$, dense $\Omega$, and explicit constraint blocks;
+  unsuitable when explicit constraints are $O(n)$.
 - Workspace reuse requires a fixed structure (covariance, constraint
   matrices, bounds); adaptive penalty changes still rebuild the reduced
   factorization in full.
@@ -339,7 +339,7 @@ Near-term theme: **complete the public-release gate without weakening
 trust**. Immediate priorities:
 
 1. ~~Automatic scaling (Ruiz / equilibration) and large-instance reliability~~
-   — landed; smoke matrix now passes at \(n=5000, k=100\)
+   — landed; smoke matrix now passes at $n=5000, k=100$
 2. **PyPI wheels**; ~~fair OSQP/Clarabel comparison~~ — first protocol
    report published under `benchmarks/results/2026-07/`
 3. ~~Exact L1 turnover~~ — landed, dedicated soft-threshold prox block
