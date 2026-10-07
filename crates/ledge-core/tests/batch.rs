@@ -196,7 +196,7 @@ fn chaining_requires_a_turnover_term() {
 
 #[test]
 fn empty_batches_and_empty_accounts_are_fine() {
-    assert!(solve_batch(&[], None).is_empty());
+    assert_eq!(solve_batch(&[], None).len(), 0);
 
     let account = BatchAccount {
         problem: base_problem(0),
@@ -204,5 +204,5 @@ fn empty_batches_and_empty_accounts_are_fine() {
         chain_previous_weights: false,
     };
     let results = solve_batch(std::slice::from_ref(&account), None);
-    assert!(results[0].as_ref().unwrap().is_empty());
+    assert_eq!(results[0].as_ref().unwrap().len(), 0);
 }

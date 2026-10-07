@@ -183,7 +183,7 @@ fn max_iterations_attaches_actionable_diagnostics() {
         .expect("failed solves carry diagnostics");
     assert!(diagnostics.primal_tolerance > 0.0);
     assert!(diagnostics.dual_tolerance > 0.0);
-    assert!(!diagnostics.hints.is_empty());
+    assert_ne!(diagnostics.hints.len(), 0);
 }
 
 #[test]
