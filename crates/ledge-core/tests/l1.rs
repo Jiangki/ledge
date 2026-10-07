@@ -257,9 +257,8 @@ fn large_costs_freeze_the_feasible_previous_portfolio() {
     for value in &mut term.anchor {
         *value /= total;
     }
-    for cost in &mut term.costs {
-        *cost = 10.0; // dwarfs every return and risk gradient
-    }
+    // 10.0 dwarfs every return and risk gradient.
+    term.costs.fill(10.0);
     let anchor = term.anchor.clone();
 
     let solution = Solver::default().solve(&problem, None).unwrap();
